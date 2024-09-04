@@ -1,18 +1,11 @@
-Security Component
-==================
+Security Component - Core
+=========================
 
-The Security component provides a complete security system for your web
-application. It ships with facilities for authenticating using HTTP basic or
-digest authentication, interactive form login or X.509 certificate login, but
-also allows you to implement your own authentication strategies. Furthermore,
-the component provides ways to authorize authenticated users based on their
-roles.
+# Canary deployment
+## Enabling the possibility that SF 3.* and SF 4.* applications can coexist
+The changes in this branch enable canary deployment for applications that have been upgraded from Symfony 3 to Symfony 4.  
+The upgraded version (Symfony 4) can run on a canary server, while the same application with Symfony 3 runs on the existing productive server.
 
-Resources
----------
+The challenge is that the user logs in on one system and stays logged in when he switches to the other server.
 
-  * [Documentation](https://symfony.com/doc/current/components/security.html)
-  * [Contributing](https://symfony.com/doc/current/contributing/index.html)
-  * [Report issues](https://github.com/symfony/symfony/issues) and
-    [send Pull Requests](https://github.com/symfony/symfony/pulls)
-    in the [main Symfony repository](https://github.com/symfony/symfony)
+This branch adapts the structure of the serialized session for the Symfony 3 application to the structure used by Symfony 4.

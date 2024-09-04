@@ -27,6 +27,7 @@ abstract class AbstractToken implements TokenInterface
 {
     private $user;
     private $roles = [];
+    private $roleNames = [];
     private $authenticated = false;
     private $attributes = [];
 
@@ -45,7 +46,13 @@ abstract class AbstractToken implements TokenInterface
             }
 
             $this->roles[] = $role;
+            $this->roleNames[] = (string) $role;
         }
+    }
+
+    public function getRoleNames()
+    {
+        return $this->roleNames;
     }
 
     /**
@@ -137,7 +144,7 @@ abstract class AbstractToken implements TokenInterface
      */
     public function serialize()
     {
-        $serialized = [$this->user, $this->authenticated, $this->roles, $this->attributes];
+        $serialized = [$this->user, $this->authenticated, $this->roles, $this->attributes, $this->roleNames];
 
         return $this->doSerialize($serialized, \func_num_args() ? func_get_arg(0) : null);
     }
@@ -147,7 +154,17 @@ abstract class AbstractToken implements TokenInterface
      */
     public function unserialize($serialized)
     {
-        list($this->user, $this->authenticated, $this->roles, $this->attributes) = \is_array($serialized) ? $serialized : unserialize($serialized);
+        $data = \is_array($serialized) ? $serialized : unserialize($serialized);
+
+        [$this->user, $this->authenticated, $this->roles, $this->attributes] = $data;
+
+        // migration path to 4.3+
+        if (null === $this->roleNames = $data[4] ?? null) {
+            $this->roleNames = [];
+            foreach ($this->roles as $role) {
+                $this->roleNames[] = (string) $role;
+            }
+        }
     }
 
     /**
